@@ -1,6 +1,6 @@
 # React Freezeframe
 
-[![npm version](https://badge.fury.io/js/react-freezeframe.svg)](https://badge.fury.io/js/react-freezeframe)
+[![npm version](https://badge.fury.io/js/react-freezeframe-vite.svg)](https://badge.fury.io/js/react-freezeframe-vite)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 **Modernized React wrapper for freezeframe.js** - Built with Vite and ES Modules for modern React applications.
@@ -21,7 +21,7 @@ React Freezeframe is a React component that automatically pauses animated GIFs a
 ## 🚀 Installation
 
 ```bash
-npm install react-freezeframe
+npm install react-freezeframe-vite
 ```
 
 **Peer Dependencies:**
@@ -34,7 +34,7 @@ npm install react-freezeframe
 ### Basic Usage
 
 ```jsx
-import ReactFreezeframe from 'react-freezeframe';
+import ReactFreezeframe from 'react-freezeframe-vite';
 
 function App() {
   return (
@@ -57,7 +57,7 @@ function App() {
 ### Advanced Usage
 
 ```jsx
-import ReactFreezeframe from 'react-freezeframe';
+import ReactFreezeframe from 'react-freezeframe-vite';
 
 function AdvancedExample() {
   const handleStart = (items, isPlaying) => {
@@ -106,6 +106,276 @@ function AdvancedExample() {
 }
 ```
 
+## 🎮 Control Methods
+
+### 1. Automatic Triggers
+
+#### Hover Trigger (Default)
+```jsx
+<ReactFreezeframe
+  src="animation.gif"
+  options={{ trigger: 'hover' }}
+/>
+```
+
+#### Click Trigger
+```jsx
+<ReactFreezeframe
+  src="animation.gif"
+  options={{ trigger: 'click' }}
+/>
+```
+
+#### No Automatic Trigger (Manual Control Only)
+```jsx
+<ReactFreezeframe
+  src="animation.gif"
+  options={{ trigger: false }}
+/>
+```
+
+### 2. Manual Control with Refs
+
+```jsx
+import { useRef } from 'react';
+import ReactFreezeframe from 'react-freezeframe-vite';
+
+function ManualControlExample() {
+  const freezeframeRef = useRef();
+
+  const startAnimation = () => {
+    freezeframeRef.current?.start();
+  };
+
+  const stopAnimation = () => {
+    freezeframeRef.current?.stop();
+  };
+
+  const toggleAnimation = () => {
+    freezeframeRef.current?.toggle();
+  };
+
+  return (
+    <div>
+      <ReactFreezeframe
+        ref={freezeframeRef}
+        src="animated.gif"
+        options={{ trigger: false }}
+      />
+      <div className="controls">
+        <button onClick={startAnimation}>Start Animation</button>
+        <button onClick={stopAnimation}>Stop Animation</button>
+        <button onClick={toggleAnimation}>Toggle Animation</button>
+      </div>
+    </div>
+  );
+}
+```
+
+### 3. Event-Based Control
+
+```jsx
+import { useState } from 'react';
+import ReactFreezeframe from 'react-freezeframe-vite';
+
+function EventControlExample() {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [playCount, setPlayCount] = useState(0);
+
+  const handleStart = (items, playing) => {
+    setIsPlaying(true);
+    setPlayCount(prev => prev + 1);
+    console.log('Animation started!');
+  };
+
+  const handleStop = (items, playing) => {
+    setIsPlaying(false);
+    console.log('Animation stopped!');
+  };
+
+  const handleToggle = (items, playing) => {
+    console.log('Animation toggled:', playing);
+  };
+
+  return (
+    <div>
+      <ReactFreezeframe
+        src="demo.gif"
+        options={{ trigger: 'hover' }}
+        onStart={handleStart}
+        onStop={handleStop}
+        onToggle={handleToggle}
+      />
+      <div className="status">
+        <p>Status: {isPlaying ? 'Playing' : 'Paused'}</p>
+        <p>Play Count: {playCount}</p>
+      </div>
+    </div>
+  );
+}
+```
+
+### 4. Multiple GIFs Control
+
+```jsx
+import ReactFreezeframe from 'react-freezeframe-vite';
+
+function MultipleGifsExample() {
+  return (
+    <div>
+      {/* Control multiple GIFs with same settings */}
+      <ReactFreezeframe
+        options={{
+          trigger: 'click',
+          overlay: true,
+          responsive: true
+        }}
+      >
+        <img src="gif1.gif" alt="Animation 1" />
+        <img src="gif2.gif" alt="Animation 2" />
+        <img src="gif3.gif" alt="Animation 3" />
+      </ReactFreezeframe>
+
+      {/* Individual GIFs with different settings */}
+      <div className="gif-grid">
+        <ReactFreezeframe
+          src="logo.gif"
+          options={{ trigger: 'hover', overlay: false }}
+        />
+        <ReactFreezeframe
+          src="banner.gif"
+          options={{ trigger: 'click', overlay: true }}
+        />
+        <ReactFreezeframe
+          src="icon.gif"
+          options={{ trigger: false, overlay: true }}
+        />
+      </div>
+    </div>
+  );
+}
+```
+
+### 5. Conditional Control
+
+```jsx
+import { useState, useEffect } from 'react';
+import ReactFreezeframe from 'react-freezeframe-vite';
+
+function ConditionalControlExample() {
+  const [isVisible, setIsVisible] = useState(false);
+  const [isAutoplay, setIsAutoplay] = useState(true);
+  const freezeframeRef = useRef();
+
+  useEffect(() => {
+    // Auto-play when component becomes visible
+    if (isVisible && isAutoplay) {
+      setTimeout(() => {
+        freezeframeRef.current?.start();
+      }, 1000);
+    }
+  }, [isVisible, isAutoplay]);
+
+  return (
+    <div>
+      <button onClick={() => setIsVisible(!isVisible)}>
+        {isVisible ? 'Hide' : 'Show'} GIF
+      </button>
+      <button onClick={() => setIsAutoplay(!isAutoplay)}>
+        {isAutoplay ? 'Disable' : 'Enable'} Autoplay
+      </button>
+
+      {isVisible && (
+        <ReactFreezeframe
+          ref={freezeframeRef}
+          src="conditional.gif"
+          options={{ trigger: false }}
+        />
+      )}
+    </div>
+  );
+}
+```
+
+### 6. File Upload Integration
+
+```jsx
+import { useState, useRef } from 'react';
+import ReactFreezeframe from 'react-freezeframe-vite';
+
+function FileUploadExample() {
+  const [uploadedGif, setUploadedGif] = useState(null);
+  const fileInputRef = useRef();
+
+  const handleFileUpload = (event) => {
+    const file = event.target.files?.[0];
+    if (file && file.type === 'image/gif') {
+      const url = URL.createObjectURL(file);
+      setUploadedGif(url);
+    } else {
+      alert('Please select a GIF file');
+    }
+  };
+
+  return (
+    <div>
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/gif"
+        onChange={handleFileUpload}
+        style={{ display: 'none' }}
+      />
+      <button onClick={() => fileInputRef.current?.click()}>
+        Upload GIF
+      </button>
+
+      {uploadedGif && (
+        <div className="preview">
+          <h3>Uploaded GIF Preview:</h3>
+          <ReactFreezeframe
+            src={uploadedGif}
+            alt="Uploaded GIF"
+            options={{
+              trigger: 'hover',
+              overlay: false,
+              responsive: true
+            }}
+          />
+        </div>
+      )}
+    </div>
+  );
+}
+```
+
+### 7. Responsive Design Integration
+
+```jsx
+import ReactFreezeframe from 'react-freezeframe-vite';
+
+function ResponsiveExample() {
+  return (
+    <div className="responsive-container">
+      <ReactFreezeframe
+        src="responsive.gif"
+        options={{
+          trigger: 'hover',
+          overlay: true,
+          responsive: true
+        }}
+        style={{
+          maxWidth: '100%',
+          height: 'auto',
+          borderRadius: '8px',
+          boxShadow: '0 4px 8px rgba(0,0,0,0.1)'
+        }}
+      />
+    </div>
+  );
+}
+```
+
 ## ⚙️ Props
 
 ### Component Props
@@ -137,41 +407,11 @@ function AdvancedExample() {
 - **`'click'`**: GIF animates on click/tap
 - **`false`**: No automatic triggers (manual control only)
 
-### Manual Control
+### Manual Control Methods
 
-```jsx
-import { useRef } from 'react';
-import ReactFreezeframe from 'react-freezeframe';
-
-function ManualControl() {
-  const freezeframeRef = useRef();
-
-  const startAnimation = () => {
-    freezeframeRef.current?.start();
-  };
-
-  const stopAnimation = () => {
-    freezeframeRef.current?.stop();
-  };
-
-  const toggleAnimation = () => {
-    freezeframeRef.current?.toggle();
-  };
-
-  return (
-    <div>
-      <ReactFreezeframe
-        ref={freezeframeRef}
-        src="animated.gif"
-        options={{ trigger: false }}
-      />
-      <button onClick={startAnimation}>Start</button>
-      <button onClick={stopAnimation}>Stop</button>
-      <button onClick={toggleAnimation}>Toggle</button>
-    </div>
-  );
-}
-```
+- **`start()`**: Start the animation
+- **`stop()`**: Stop the animation
+- **`toggle()`**: Toggle between play/pause
 
 ### Event Callbacks
 
@@ -240,7 +480,7 @@ function ManualControl() {
    const ReactFreezeframe = require('react-freezeframe');
    
    // New (v5)
-   import ReactFreezeframe from 'react-freezeframe';
+   import ReactFreezeframe from 'react-freezeframe-vite';
    ```
 
 2. **Build System**: No longer supports Babel/CRA out of the box
