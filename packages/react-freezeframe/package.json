@@ -1,5 +1,5 @@
 {
-  "name": "react-freezeframe",
+  "name": "react-freezeframe-vite",
   "version": "5.0.3",
   "license": "MIT",
   "main": "./dist/ReactFreezeframe.js",
